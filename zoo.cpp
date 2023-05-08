@@ -101,7 +101,7 @@ public:
         if (canAfford(*animal)) {
             money -= animal->getCost();
             zoo.addAnimal(animal);
-            std::cout << "You bought " << animal->getName() << " the " << animal->getSpecies() << ".\n";
+            std::cout << "You bought " << newAnimal->getName() << " the " << newAnimal->getSpecies() << ".\n";
         } else {
             std::cout << "You don't have enough money to buy this animal.\n";
         }
