@@ -45,6 +45,13 @@ public:
 };
 
 class Zoo {
+    Zoo() {
+    // Add animals to the catalog
+    catalog.push_back(new Lion("Lion_1", 1200));
+    catalog.push_back(new Tiger("Tiger_1", 1500));
+    catalog.push_back(new Bear("Bear_1", 1000));
+}
+
 public:
     void addAnimal(Animal* animal) {
         animals.push_back(animal);
@@ -68,6 +75,13 @@ public:
         }
         return nullptr;
     }
+    
+    void listCatalog() {
+    std::cout << "Animals available for purchase:\n";
+    for (const auto& animal : catalog) {
+        std::cout << animal->getName() << " the " << animal->getSpecies() << " (Cost: $" << animal->getCost() << ")\n";
+    }
+}
 
     void listAnimals() {
         if (animals.empty()) {
@@ -82,7 +96,9 @@ public:
 
 private:
     std::vector<Animal*> animals;
+    std::vector<Animal*> catalog;
 };
+
 
 class Player {
 public:
@@ -97,15 +113,17 @@ public:
         }
     }
 
-    void buyAnimal(Zoo& zoo, Animal* animal) {
-        if (canAfford(*animal)) {
-            money -= animal->getCost();
-            zoo.addAnimal(animal);
-            std::cout << "You bought " << newAnimal->getName() << " the " << newAnimal->getSpecies() << ".\n";
-        } else {
-            std::cout << "You don't have enough money to buy this animal.\n";
-        }
+void buyAnimal(Zoo& zoo, Animal* animal) {
+    if (animal == nullptr) {
+        std::cout << "Animal not found in the catalog.\n";
+    } else if (!canAfford(*animal)) {
+        std::cout << "You don't have enough money to buy this animal.\n";
+    } else {
+        money -= animal->getCost();
+        zoo.addAnimal(animal);
+        std::cout << "You bought " << animal->getName() << " the " << animal->getSpecies() << ".\n";
     }
+}
 
     void sellAnimal(Zoo& zoo, const std::string& name) {
         Animal* animal = zoo.findAnimal(name);
@@ -114,7 +132,6 @@ public:
             zoo.removeAnimal(name);
             std::cout << "You sold " << animal->getName() << " the " << animal->getSpecies() << ".\n";
         } else {
-            std::cout << "Animal not found in
             std::cout << "Animal not found in your zoo.\n";
         }
     }
@@ -149,7 +166,33 @@ void playGame(Zoo& zoo, Player& player) {
         std::cin >> choice;
 
         switch (choice) {
-            // ... (rest of the switch case)
+            case 1:
+                zoo.listAnimals();
+                break;
+            case 2:
+                std::cout << "Enter the name of the animal you want to feed: ";
+                std::cin.ignore();
+                std::getline(std::cin, animalName);
+                player.feedAnimal(zoo.findAnimal(animalName));
+                break;
+            case 3:
+                zoo.listCatalog();
+                std::cout << "Enter the name of the animal you want to buy: ";
+                std::cin.ignore();
+                std::getline(std::cin, animalName);
+                player.buyAnimal(zoo, zoo.findAnimal(animalName));
+                break;
+            case 4:
+                std::cout << "Enter the name of the animal you want to sell: ";
+                std::cin.ignore();
+                std::getline(std::cin, animalName);
+                player.sellAnimal(zoo, animalName);
+                break;
+            case 5:
+                std::cout << "Thanks for playing! Goodbye.\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
         }
     } while (choice != 5);
 }
